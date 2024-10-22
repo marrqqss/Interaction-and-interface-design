@@ -49,10 +49,48 @@ int MyGLWidget::printOglError(const char file[], int line, const char func[])
 MyGLWidget::~MyGLWidget() {
 }
 
+float MyGLWidget::max(float x, float y)
+{
+    if (x > y) return x;
+    return y;
+}
+
+float MyGLWidget::min(float x, float y)
+{
+    if (x > y) return y;
+    return x;
+}
+
+void MyGLWidget::calculateMaxPoints()
+{
+    for (uint i = 0; i < m.vertices().size(); i+=3)
+    {
+        if (i == 0)
+        {
+            pmax[0] = m.vertices()[0];
+            pmax[1] = m.vertices()[1];
+            pmax[2] = m.vertices()[2];
+            pmin[0] = m.vertices()[0];
+            pmin[1] = m.vertices()[1];
+            pmin[2] = m.vertices()[2];
+        }
+        else
+        {
+            pmax[0] = max(pmax[0], m.vertices()[i]);
+            pmax[1] = max(pmax[1], m.vertices()[i+1]);
+            pmax[2] = max(pmax[2], m.vertices()[i+2]);
+            pmin[0] = min(pmin[0], m.vertices()[i]);
+            pmin[1] = min(pmin[1], m.vertices()[i+1]);
+            pmin[2] = min(pmin[0], m.vertices()[i]);
+        }
+    }
+}
 
 void MyGLWidget::initializeGL ( )
 {
     BL2GLWidget::initializeGL();
+    //cargamos modelo de homer
+    m.load("./models/HomerProves.obj");
     glEnable(GL_DEPTH_TEST);
     //hay que llamar a las nuevas funciones para que se ejecuten
     projectTransform();
@@ -61,8 +99,6 @@ void MyGLWidget::initializeGL ( )
 
 void MyGLWidget::creaBuffers ()
 {
-    //cargamos modelo de homer
-    m.load("./models/HomerProves.obj");
     // Creació del Vertex Array Object per pintar
     glGenVertexArrays(1, &VAO_Homer);
     glBindVertexArray(VAO_Homer);
@@ -114,6 +150,7 @@ void MyGLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Carreguem la transformació de model
+
     modelTransform();
 
     // Activem el VAO per a pintar la caseta 
