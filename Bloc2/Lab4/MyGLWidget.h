@@ -31,15 +31,21 @@ class MyGLWidget : public BL2GLWidget {
 
     //declaramos nueva funcion para hacer el transform de la matriz de camara
     void viewTransform();
+    
+    //redeclaramos para añadir el rotate
+    virtual void keyPressEvent(QKeyEvent* event);
 
     //declaramos el modelo
     Model m;
 
     //declaramos VAO para modelo
     GLuint VAO_Homer;
+    GLuint VAO_Cuadrat;
 
     GLuint prjLoc;
     GLuint vmLoc;
+
+    float angle;
 
   private:
     int printOglError(const char file[], int line, const char func[]);
